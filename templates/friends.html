@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>好友列表</title>
+</head>
+<body>
+    <div id="send_msg">
+        <script src="/static/jquery-3.3.1.js" ></script>
+        <div style="position: fixed">
+            <h4>发送消息</h4>
+            <input type="text" id="username" name="username" title="用户名"/>
+            <input type="text" id="message" name="message" title="信息"/>
+            <input type="button" id="commit" value="发送">
+            <h4>聊天日志：</h4>
+            <textarea rows="10" cols="150" id="charLog" ></textarea>
+        </div>
+        <script>
+            $(function () {
+                receiverMSG();
+                SendMsg();
+            });
+            function SendMsg() {
+                $("#commit").click(function () {
+                    $.ajax({
+                        url: '/send-msg/',
+                        type: 'GET',
+                        data:{
+                            'username': $("#username").val(),
+                            'message': $("#message").val()
+                        },
+                        dataType: "JSON",
+                        success: function (arg) {
+                            var CL = $("#charLog");
+                            var charLog = CL.val();
+                            charLog = charLog +
+                                    '------------------------------------------------------\n' +
+                                    '发送了消息给->' + '"' + arg.ToUserNickName + '"\n' +
+                                    "内容：\n" + $("#message").val() +
+                                    '\n------------------------------------------------------\n';
+                            CL.val(charLog);
+                            document.getElementById('charLog').scrollTop = document.getElementById('charLog').scrollHeight;
+
+                        }
+                    })
+                });
+
+                $("li").dblclick(function () {
+                    var v = $(this).attr('username');
+                    $("#username").val(v);
+                })
+            }
+            function receiverMSG() {
+                $.ajax({
+                    url: '/receive-msg/get-msg',
+                    type: 'GET',
+                    success: function (arg) {
+                        if(arg.code==0){
+                            receiverMSG();
+                        }
+                        else if(arg.code==2){
+                            var charLog = $("#charLog").val();
+                            for(var i=0; i<arg.msgs.length; i++){
+                                var sender;
+                                sender = arg.msgs[i].FromUserNickName;
+                                msg = '+++++++++++++++++++++++++++++++++++++++++++++++++++++\n' +
+                                    '收到来自“' + sender + "”的消息！！！\n内容： " + arg.msgs[i].Content +
+                                    "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
+                                $("#charLog").val(charLog + msg);
+                                document.getElementById('charLog').scrollTop = document.getElementById('charLog').scrollHeight;
+                            }
+                            receiverMSG();
+                        }
+                    },
+                    error: function () {
+                        receiverMSG();
+                    }
+
+                })
+            }
+        </script>
+    </div>
+
+
+    <div id="friends" style="padding-top: 300px">
+       
+        <h3>好友数量：{{ friends_msg['MemberCount'] }}</h3>
+        <ul>
+            {% for friend in friends_msg['MemberList'] %}
+                <li username="{{ friend.get('UserName') }}">
+                    <strong>昵称：</strong><a class="user">{{ friend.get('NickName') }}</a><br>
+                    <p><strong>个性签名：</strong>&nbsp;&nbsp;{{ friend.get('Signature') }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>微信个人信息</title>
+</head>
+<body>
+    <h1>微信个人信息</h1>
+    <div>
+        <ul>
+            <li><img src="https://wx2.qq.com{{ user_info['HeadImgUrl']  | safe}}" /> </li>
+            <li>昵称：{{ user_info['NickName'] }}</li>
+            <li>个性签名：{{ user_info['Signature'] }}</li>
+        </ul>
+    </div>
+    <h1>公众号信息</h1>
+    <div>
+        <ul>
+            {% for c in user_contract %}
+                <li><img src="https://wx2.qq.com{{ c['HeadImgUrl'] | safe }}" /><br>
+                    昵称：{{ c['NickName'] }}</li>
+            {% endfor %}
+        </ul>
+
+    </div>
+    <h1>最近未读消息</h1>
+        <ul>
+            {% for mc in user_unread_contract %}
+                <li>
+                    <strong>昵称：{{ mc['NickName'] }}</strong><br>
+                    <p>消息量：{{ mc['MPArticleCount'] }}</p>
+                    <ul>
+                        {% for ml in mc['MPArticleList'] %}
+                            <li>
+                                <a href="{{ ml['Url']  | safe}}">
+                                    <strong>{{ ml['Title'] }}</strong><br>
+                                    <p>{{ ml['Digest'] }}</p>
+                                </a>
+                            </li>
+                        {% endfor %}
+
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    <div>
+
+
+    </div>
+    <h1>好友列表</h1>
+    <div>
+        <ul>
+            {% for f in user_friends %}
+                <li>
+                    <img src="https://wx2.qq.com{{ f['HeadImgUrl'] | safe }}" /><br>
+                    <strong>昵称：{{ f['NickName'] }}</strong><br>
+                    <p>个性签名：{{ f['Signature'] }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+
+    </div>
+</body>
+</html>

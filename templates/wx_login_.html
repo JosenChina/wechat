@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>模拟微信登录</title>
+</head>
+<body>
+<h1>你好</h1>
+    <img src="https://login.weixin.qq.com/qrcode/{{ ImgId }}" id="img_id"/>
+    <script src="/static/jquery-3.3.1.js" ></script>
+    <script>
+        $(function () {
+            checkLogin();
+            
+        });
+        function  checkLogin() {
+            $.ajax({
+                url:'/login/check',
+                type: 'GET',
+                success: function (arg) {
+                    if (arg.code == 408) {
+                        checkLogin();
+                    }
+                    else if(arg.code == 201){
+                        $('#img_id').attr('src', arg.avatar);
+                        checkLogin();
+                    }
+                    else if(arg.code == 200){
+                        window.location.href = '/friends/index'
+                    }
+                }
+            })
+            
+        }
+
+    </script>
+
+</body>
+</html>
