@@ -17,6 +17,9 @@ def create_app(configName):
     return app
 
 
+from flask_script import Manager
+
 if __name__ == '__main__':
     app = create_app('default')
-    app.run()
+    manager = Manager(app)
+    manager.run()
