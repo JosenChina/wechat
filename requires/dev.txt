@@ -7,7 +7,7 @@ Flask-Script==2.0.6
 idna==2.7
 itsdangerous==1.1.0
 Jinja2==2.10
-lxml==4.2.5
+lxml==4.6.2
 MarkupSafe==1.1.0
 pycurl==7.43.0
 pygobject==3.20.0
